@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AhriRAG - TIIS.AI RAG 기반 맞춤형 서비스 플랫폼</title>
+    <style>
+      /* Design System Variables */
+      :root {
+        /* AhriRAG Brand Colors - Dark Blue Theme */
+        --color-primary: #0d2d5a;
+        --color-primary-dark: #081a36;
+        --color-secondary: #1a4d7d;
+        --color-accent: #2563a8;
+        --color-accent-light: #3b82f6;
+        --color-light: #f8fafc;
+        --color-white: #ffffff;
+        --color-gray-100: #f1f5f9;
+        --color-gray-200: #e2e8f0;
+        --color-gray-300: #cbd5e1;
+        --color-gray-400: #94a3b8;
+        --color-gray-600: #475569;
+        --color-gray-700: #334155;
+        --color-gray-800: #1e293b;
+        --color-text: #1e293b;
+        --color-text-light: #64748b;
+
+        /* Spacing */
+        --space-xs: 0.5rem;
+        --space-sm: 1rem;
+        --space-md: 1.5rem;
+        --space-lg: 2rem;
+        --space-xl: 3rem;
+        --space-2xl: 4rem;
+        --space-3xl: 6rem;
+
+        /* Typography */
+        --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+          sans-serif;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem;
+        --font-size-3xl: 1.875rem;
+        --font-size-4xl: 2.25rem;
+        --font-size-5xl: 3rem;
+        --font-size-6xl: 3.75rem;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+        /* Border Radius */
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+
+        /* Transitions */
+        --transition-fast: 150ms ease-in-out;
+        --transition-base: 250ms ease-in-out;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        font-size: var(--font-size-base);
+        line-height: 1.6;
+        color: var(--color-text);
+        background-color: var(--color-white);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Header & Navigation */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(13, 45, 90, 0.98);
+        backdrop-filter: blur(10px);
+        box-shadow: var(--shadow-md);
+        z-index: 1000;
+        transition: all var(--transition-base);
+      }
+
+      .nav-container {
+        position: relative;
+        min-width: 1280px;
+        margin: 0;
+        padding: 0 var(--space-md);
+        display: flex;
+        align-items: center;
+        height: 70px;
+      }
+
+      .logo {
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+        color: var(--color-white);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+        margin-right: auto;
+      }
+
+      .nav-menu {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        list-style: none;
+        gap: var(--space-lg);
+        align-items: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-item {
+        position: relative;
+      }
+
+      .nav-link {
+        color: var(--color-white);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: var(--font-size-base);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-sm);
+        transition: all var(--transition-fast);
+        display: inline-block;
+      }
+
+      .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--color-accent-light);
+      }
+
+      /* Dropdown Menu */
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-toggle {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .dropdown-toggle::after {
+        content: '▾';
+        font-size: 0.875rem;
+        transition: transform var(--transition-fast);
+      }
+
+      .dropdown.active .dropdown-toggle::after {
+        transform: rotate(180deg);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 0.5rem;
+        background-color: var(--color-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        min-width: 260px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all var(--transition-base);
+        overflow: hidden;
+      }
+
+      .dropdown.active .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .dropdown-item {
+        display: block;
+        padding: var(--space-sm) var(--space-md);
+        color: var(--color-text);
+        text-decoration: none;
+        transition: background-color var(--transition-fast);
+        border-bottom: 1px solid var(--color-gray-200);
+      }
+
+      .dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .dropdown-item:hover:not(.disabled) {
+        background-color: var(--color-gray-100);
+      }
+
+      .dropdown-item.disabled {
+        color: var(--color-gray-400);
+        cursor: not-allowed;
+        font-style: italic;
+      }
+
+      .dropdown-item-title {
+        font-weight: 600;
+        font-size: var(--font-size-base);
+        color: var(--color-primary);
+      }
+
+      .dropdown-item-desc {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-light);
+        margin-top: 0.25rem;
+      }
+
+      /* Mobile Menu Toggle */
+      .mobile-toggle {
+        margin-left: auto;
+        display: none;
+        background: none;
+        border: none;
+        color: var(--color-white);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: var(--space-xs);
+      }
+
+      /* Hero Section */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          var(--color-primary) 0%,
+          var(--color-secondary) 50%,
+          var(--color-accent) 100%
+        );
+        color: var(--color-white);
+        padding: calc(70px + var(--space-3xl)) var(--space-md) var(--space-3xl);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+        pointer-events: none;
+      }
+
+      .hero-content {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-title {
+        font-size: var(--font-size-6xl);
+        font-weight: 800;
+        margin-bottom: var(--space-md);
+        letter-spacing: -0.03em;
+      }
+
+      .hero-subtitle {
+        font-size: var(--font-size-2xl);
+        font-weight: 600;
+        margin-bottom: var(--space-md);
+        opacity: 0.95;
+      }
+
+      .hero-description {
+        font-size: var(--font-size-lg);
+        line-height: 1.8;
+        margin-bottom: var(--space-xl);
+        opacity: 0.9;
+      }
+
+      .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+        justify-content: center;
+        margin-top: var(--space-xl);
+      }
+
+      .badge {
+        background-color: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: var(--space-xs) var(--space-md);
+        border-radius: var(--radius-xl);
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Section Styles */
+      .section {
+        padding: var(--space-3xl) var(--space-md);
+      }
+
+      .section-light {
+        background-color: var(--color-white);
+      }
+
+      .section-gray {
+        background-color: var(--color-gray-100);
+      }
+
+      .section-gradient {
+        background: linear-gradient(to bottom, var(--color-light), var(--color-gray-100));
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: var(--space-2xl);
+      }
+
+      .section-title {
+        font-size: var(--font-size-4xl);
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: var(--space-md);
+        letter-spacing: -0.02em;
+      }
+
+      .section-subtitle {
+        font-size: var(--font-size-lg);
+        color: var(--color-text-light);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* Cards */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-lg);
+        margin-top: var(--space-xl);
+      }
+
+      .card {
+        background-color: var(--color-white);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-base);
+        border: 1px solid var(--color-gray-200);
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .card-title {
+        font-size: var(--font-size-2xl);
+        font-weight: 600;
+        color: var(--color-primary);
+        margin-bottom: var(--space-sm);
+      }
+
+      .card-description {
+        color: var(--color-text-light);
+        line-height: 1.7;
+      }
+
+      /* Service Cards */
+      .service-card {
+        background: linear-gradient(to bottom right, var(--color-white), var(--color-light));
+        border: 2px solid var(--color-accent);
+        padding: var(--space-2xl);
+        margin-bottom: var(--space-xl);
+      }
+
+      .service-header {
+        margin-bottom: var(--space-lg);
+      }
+
+      .service-name {
+        font-size: var(--font-size-3xl);
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: var(--space-xs);
+      }
+
+      .service-tagline {
+        font-size: var(--font-size-xl);
+        color: var(--color-accent);
+        font-weight: 500;
+        margin-bottom: var(--space-md);
+      }
+
+      .service-description {
+        font-size: var(--font-size-lg);
+        line-height: 1.8;
+        color: var(--color-text);
+        margin-bottom: var(--space-lg);
+      }
+
+      .service-section {
+        margin-bottom: var(--space-lg);
+      }
+
+      .service-section-title {
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        color: var(--color-secondary);
+        margin-bottom: var(--space-sm);
+      }
+
+      .feature-list,
+      .use-case-list {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-sm);
+      }
+
+      .feature-item,
+      .use-case-item {
+        padding: var(--space-sm);
+        background-color: rgba(37, 99, 168, 0.05);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: start;
+        gap: var(--space-sm);
+      }
+
+      .feature-item::before,
+      .use-case-item::before {
+        content: '✓';
+        color: var(--color-accent);
+        font-weight: 700;
+        font-size: var(--font-size-lg);
+        flex-shrink: 0;
+      }
+
+      .btn-service {
+        display: inline-block;
+        padding: var(--space-sm) var(--space-xl);
+        background-color: var(--color-accent);
+        color: var(--color-white);
+        text-decoration: none;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: var(--font-size-lg);
+        transition: all var(--transition-base);
+        margin-top: var(--space-md);
+      }
+
+      .btn-service:hover {
+        background-color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .btn-service.disabled {
+        background-color: var(--color-gray-400);
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      /* Future Services */
+      .future-list {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-md);
+      }
+
+      .future-item {
+        padding: var(--space-md);
+        background-color: var(--color-gray-100);
+        border-radius: var(--radius-md);
+        border-left: 4px solid var(--color-accent);
+        font-weight: 500;
+      }
+
+      /* Steps */
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-xl);
+        margin-top: var(--space-xl);
+      }
+
+      .step {
+        text-align: center;
+      }
+
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+        color: var(--color-white);
+        border-radius: 50%;
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+        margin-bottom: var(--space-md);
+      }
+
+      .step-title {
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+        color: var(--color-primary);
+        margin-bottom: var(--space-sm);
+      }
+
+      .step-description {
+        color: var(--color-text-light);
+        line-height: 1.7;
+      }
+
+      /* Technology Stack */
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-lg);
+      }
+
+      .tech-category {
+        background-color: var(--color-white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-md);
+        border-top: 4px solid var(--color-accent);
+      }
+
+      .tech-category-title {
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+        color: var(--color-primary);
+        margin-bottom: var(--space-md);
+      }
+
+      .tech-list {
+        list-style: none;
+      }
+
+      .tech-item {
+        padding: var(--space-sm) 0;
+        border-bottom: 1px solid var(--color-gray-200);
+        color: var(--color-text);
+      }
+
+      .tech-item:last-child {
+        border-bottom: none;
+      }
+
+      /* Use Cases */
+      .use-case-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: var(--space-lg);
+      }
+
+      .use-case-card {
+        background-color: var(--color-white);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-md);
+        border-left: 4px solid var(--color-accent);
+        transition: all var(--transition-base);
+      }
+
+      .use-case-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .use-case-industry {
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        color: var(--color-accent);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-xs);
+      }
+
+      .use-case-service {
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: var(--space-sm);
+      }
+
+      .use-case-description {
+        color: var(--color-text-light);
+        margin-bottom: var(--space-md);
+        line-height: 1.7;
+      }
+
+      .use-case-examples {
+        list-style: none;
+      }
+
+      .use-case-example {
+        padding: var(--space-xs) 0;
+        padding-left: var(--space-md);
+        position: relative;
+        color: var(--color-text);
+        font-size: var(--font-size-sm);
+      }
+
+      .use-case-example::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+        font-weight: 700;
+      }
+
+      /* Comparison Table */
+      .comparison-table {
+        width: 100%;
+        background-color: var(--color-white);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        border-collapse: collapse;
+      }
+
+      .comparison-table th {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        padding: var(--space-md) var(--space-lg);
+        text-align: left;
+        font-weight: 600;
+        font-size: var(--font-size-lg);
+      }
+
+      .comparison-table td {
+        padding: var(--space-md) var(--space-lg);
+        border-bottom: 1px solid var(--color-gray-200);
+        color: var(--color-text);
+      }
+
+      .comparison-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .comparison-table tr:hover {
+        background-color: var(--color-gray-100);
+      }
+
+      .comparison-table td:first-child {
+        font-weight: 600;
+        color: var(--color-primary);
+      }
+
+      /* Benefits */
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-lg);
+      }
+
+      .benefit-card {
+        background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
+        color: var(--color-white);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-base);
+      }
+
+      .benefit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .benefit-title {
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+        margin-bottom: var(--space-sm);
+      }
+
+      .benefit-description {
+        opacity: 0.95;
+        line-height: 1.7;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        padding: var(--space-3xl) var(--space-md) var(--space-xl);
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-2xl);
+        margin-bottom: var(--space-2xl);
+        padding-bottom: var(--space-2xl);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .footer-section {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .footer-section-title {
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        margin-bottom: var(--space-md);
+        color: var(--color-white);
+      }
+
+      .footer-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+
+      .footer-link {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: var(--font-size-base);
+        transition: color var(--transition-fast);
+      }
+
+      .footer-link:hover {
+        color: var(--color-white);
+        text-decoration: underline;
+      }
+
+      .footer-company-name {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-xs);
+      }
+
+      .footer-company-name-ko {
+        font-size: var(--font-size-base);
+        opacity: 0.9;
+        margin-bottom: var(--space-sm);
+      }
+
+      .footer-company-desc {
+        font-size: var(--font-size-sm);
+        line-height: 1.6;
+        opacity: 0.85;
+        margin-bottom: var(--space-md);
+      }
+
+      .footer-company-link {
+        display: inline-block;
+        color: var(--color-white);
+        text-decoration: none;
+        font-size: var(--font-size-base);
+        padding: var(--space-xs) var(--space-md);
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius-sm);
+        transition: all var(--transition-fast);
+      }
+
+      .footer-company-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .footer-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+        text-align: center;
+      }
+
+      .footer-powered {
+        font-size: var(--font-size-base);
+        opacity: 0.9;
+      }
+
+      .footer-powered a {
+        color: var(--color-white);
+        text-decoration: underline;
+        font-weight: 500;
+      }
+
+      .footer-powered a:hover {
+        color: var(--color-accent-light);
+      }
+
+      .footer-copyright {
+        font-size: var(--font-size-sm);
+        opacity: 0.7;
+      }
+
+      @media (max-width: 768px) {
+        .footer-main {
+          grid-template-columns: 1fr;
+          gap: var(--space-xl);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+          position: absolute;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background-color: var(--color-primary);
+          flex-direction: column;
+          padding: var(--space-md);
+          gap: var(--space-sm);
+          box-shadow: var(--shadow-lg);
+        }
+
+        .nav-menu.active {
+          display: flex;
+        }
+
+        .mobile-toggle {
+          display: block;
+        }
+
+        .dropdown-menu {
+          position: static;
+          opacity: 1;
+          visibility: visible;
+          transform: none;
+          margin-top: var(--space-xs);
+          box-shadow: none;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-title {
+          font-size: var(--font-size-4xl);
+        }
+
+        .hero-subtitle {
+          font-size: var(--font-size-xl);
+        }
+
+        .section-title {
+          font-size: var(--font-size-3xl);
+        }
+
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .steps-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .comparison-table {
+          font-size: var(--font-size-sm);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+          padding: var(--space-sm);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .hero {
+          padding: calc(70px + var(--space-2xl)) var(--space-md) var(--space-2xl);
+        }
+
+        .section {
+          padding: var(--space-2xl) var(--space-md);
+        }
+
+        .hero-title {
+          font-size: var(--font-size-3xl);
+        }
+
+        .section-title {
+          font-size: var(--font-size-2xl);
+        }
+
+        .service-name {
+          font-size: var(--font-size-2xl);
+        }
+
+        .feature-list,
+        .use-case-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="header" id="header">
+      <nav class="nav-container">
+        <a
+          href="/TIIS.RAG_AI/"
+          class="logo"
+          style="color: rgb(255, 255, 255); font-size: 1em; text-decoration: none"
+          onmouseover="this.style.color='var(--color-accent-light)'"
+          onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'"
+        >
+          <h1>AhriRAG</h1>
+        </a>
+
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+
+        <ul class="nav-menu" id="navMenu">
+          <li class="nav-item">
+            <a href="#about" class="nav-link">플랫폼 소개</a>
+          </li>
+          <li class="nav-item dropdown" id="servicesDropdown">
+            <a href="#services" class="nav-link dropdown-toggle">서비스</a>
+            <div class="dropdown-menu">
+              <a href="/AhriDesk/" class="dropdown-item">
+                <div class="dropdown-item-title">AhriDesk</div>
+                <div class="dropdown-item-desc">개인용 RAG 서비스</div>
+              </a>
+              <a href="/AhriSure/" class="dropdown-item">
+                <div class="dropdown-item-title">AhriSure</div>
+                <div class="dropdown-item-desc">보험 산업 특화 RAG</div>
+              </a>
+              <span class="dropdown-item disabled">
+                <div class="dropdown-item-title">더 많은 서비스 준비 중...</div>
+                <div class="dropdown-item-desc">Coming Soon</div>
+              </span>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a href="#technology" class="nav-link">기술</a>
+          </li>
+          <li class="nav-item">
+            <a href="#use-cases" class="nav-link">활용 사례</a>
+          </li>
+          <li class="nav-item">
+            <a href="#tiis-rag-intro" class="nav-link">TIIS.AI RAG</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">AhriRAG</h1>
+        <p class="hero-subtitle">TIIS.AI RAG 기반 맞춤형 서비스 플랫폼</p>
+        <p class="hero-description">
+          벡터 임베딩, 의미론적 검색, LLM을 통합한 차세대 RAG 플랫폼.<br />개인용부터 산업별 특화
+          서비스까지 빠르게 구축하고 배포할 수 있습니다.
+        </p>
+        <div class="hero-badges">
+          <span class="badge">TIIS.AI RAG 기반 검증된 기술</span>
+          <span class="badge">Multi-LLM 지원 (OpenAI, Gemini 등)</span>
+          <span class="badge">ChromaDB 기반 고성능 벡터 검색</span>
+          <span class="badge">산업별 맞춤형 서비스 플랫폼</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Platform Introduction Section -->
+    <section class="section section-light" id="about">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">AhriRAG 플랫폼 핵심 기술</h2>
+          <p class="section-subtitle">
+            다중 LLM 지원, 초고속 벡터 검색, 산업별 맞춤형 서비스가 결합된 차세대 RAG 코어 기술을
+            소개합니다.
+          </p>
+        </div>
+
+        <div class="card-grid">
+          <div class="card">
+            <h3 class="card-title">RAG 기반 아키텍처</h3>
+            <p class="card-description">
+              Retrieval-Augmented Generation으로 Knowledge Cutoff 문제 해결, 최신 정보 동적 반영
+            </p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">다중 LLM 백엔드 지원</h3>
+            <p class="card-description">
+              OpenAI, Google Gemini, Anthropic Claude 등 다양한 LLM 지원, 동적 모델 라우팅
+            </p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">고성능 벡터 검색</h3>
+            <p class="card-description">
+              ChromaDB HNSW 알고리즘 기반, &lt;100ms 검색 응답 시간, 메타데이터 필터링
+            </p>
+          </div>
+          <div class="card">
+            <h3 class="card-title">확장 가능한 마이크로서비스</h3>
+            <p class="card-description">
+              FastAPI 비동기 서버, Kubernetes 오케스트레이션, 수평 확장 지원
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technology Stack Section -->
+    <section class="section section-gradient" id="technology">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">기술 구현 상세</h2>
+          <p class="section-subtitle">5가지 핵심 기술 계층의 통합 구현</p>
+        </div>
+
+        <!-- 1. LLM 및 임베딩 계층 -->
+        <div class="tech-grid" style="margin-bottom: var(--space-3xl)">
+          <div class="tech-category">
+            <div style="font-size: 2rem; margin-bottom: 8px">🤖</div>
+            <h4 class="tech-category-title">LLM 및 임베딩 계층</h4>
+            <ul class="tech-list">
+              <li class="tech-item">
+                다중 LLM 지원: OpenAI GPT-4, Google Gemini, Anthropic Claude, 오픈소스 LLM
+              </li>
+              <li class="tech-item">
+                고급 임베딩: OpenAI embedding-3, Sentence-Transformers, 도메인 특화 모델
+              </li>
+              <li class="tech-item">동적 라우팅: 비용-성능 최적화 및 자동 Failover</li>
+            </ul>
+          </div>
+          <div class="tech-category">
+            <div style="font-size: 2rem; margin-bottom: 8px">🗂️</div>
+            <h4 class="tech-category-title">벡터 검색 및 인덱싱</h4>
+            <ul class="tech-list">
+              <li class="tech-item">고성능 벡터 DB: ChromaDB, Faiss, Milvus 지원</li>
+              <li class="tech-item">Cross-Encoder 재순위화, Hybrid Search, Query Expansion</li>
+              <li class="tech-item">Incremental Indexing, 문서 청킹</li>
+            </ul>
+          </div>
+          <div class="tech-category">
+            <div style="font-size: 2rem; margin-bottom: 8px">📄</div>
+            <h4 class="tech-category-title">문서 처리 파이프라인</h4>
+            <ul class="tech-list">
+              <li class="tech-item">PDF, Office, 이미지 OCR, 웹 크롤링</li>
+              <li class="tech-item">토크나이제이션, 정규화, 불용어 처리</li>
+              <li class="tech-item">중복 제거, 언어 감지, 가독성 분석</li>
+            </ul>
+          </div>
+          <div class="tech-category">
+            <div style="font-size: 2rem; margin-bottom: 8px">📝</div>
+            <h4 class="tech-category-title">프롬프트 엔지니어링</h4>
+            <ul class="tech-list">
+              <li class="tech-item">System Message, Few-shot, Chain-of-Thought 프롬프팅</li>
+              <li class="tech-item">사실성 검증, 소스 인용, 할루시네이션 탐지</li>
+              <li class="tech-item">JSON, Markdown, 테이블 등 응답 포맷 제어</li>
+            </ul>
+          </div>
+          <div class="tech-category">
+            <div style="font-size: 2rem; margin-bottom: 8px">🚀</div>
+            <h4 class="tech-category-title">인프라 및 배포</h4>
+            <ul class="tech-list">
+              <li class="tech-item">Docker, Kubernetes, Helm 자동화 및 Self-healing</li>
+              <li class="tech-item">Prometheus, Grafana, ELK Stack, 분산 추적</li>
+              <li class="tech-item">AWS, Google Cloud, Azure, 온프레미스 지원</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2. 벡터 검색 및 데이터 관리 -->
+        <div style="margin-bottom: var(--space-3xl)">
+          <h3
+            style="
+              font-size: var(--font-size-3xl);
+              font-weight: 700;
+              color: var(--color-primary);
+              margin-bottom: var(--space-xl);
+              text-align: center;
+            "
+          >
+            2. 벡터 검색 및 데이터 관리
+          </h3>
+          <div class="tech-grid">
+            <div class="tech-category">
+              <h4 class="tech-category-title">Vector Database</h4>
+              <ul class="tech-list">
+                <li class="tech-item">ChromaDB (HNSW 알고리즘)</li>
+                <li class="tech-item">Faiss (Inverted File Index)</li>
+                <li class="tech-item">Milvus (엔터프라이즈급)</li>
+                <li class="tech-item">메타데이터 필터링</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">검색 최적화</h4>
+              <ul class="tech-list">
+                <li class="tech-item">Top-K Retrieval (&lt;100ms)</li>
+                <li class="tech-item">Cross-Encoder Reranking</li>
+                <li class="tech-item">Query Expansion</li>
+                <li class="tech-item">Sparse-Dense Hybrid Search</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">인덱싱 전략</h4>
+              <ul class="tech-list">
+                <li class="tech-item">Incremental Indexing</li>
+                <li class="tech-item">문서 청킹 (Overlapping Windows)</li>
+                <li class="tech-item">배치 임베딩 (1000+ tokens/sec)</li>
+                <li class="tech-item">캠싱 및 메모리 최적화</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 문서 처리 파이프라인 -->
+        <div style="margin-bottom: var(--space-3xl)">
+          <h3
+            style="
+              font-size: var(--font-size-3xl);
+              font-weight: 700;
+              color: var(--color-primary);
+              margin-bottom: var(--space-xl);
+              text-align: center;
+            "
+          >
+            3. 문서 처리 파이프라인
+          </h3>
+          <div class="tech-grid">
+            <div class="tech-category">
+              <h4 class="tech-category-title">멀티모달 문서 처리</h4>
+              <ul class="tech-list">
+                <li class="tech-item">PDF (pdfplumber, PyMuPDF)</li>
+                <li class="tech-item">Office (python-pptx, openpyxl)</li>
+                <li class="tech-item">OCR (Tesseract, EasyOCR)</li>
+                <li class="tech-item">웹 크롤링 (BeautifulSoup, Selenium)</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">전처리 및 정규화</h4>
+              <ul class="tech-list">
+                <li class="tech-item">토크나이제이션 (BPE, WordPiece)</li>
+                <li class="tech-item">정규화 (소문자, 띄어쓰기)</li>
+                <li class="tech-item">불용어 제거</li>
+                <li class="tech-item">인코딩 처리</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">품질 관리</h4>
+              <ul class="tech-list">
+                <li class="tech-item">중복 제거 (Deduplication)</li>
+                <li class="tech-item">가독성 점수</li>
+                <li class="tech-item">언어 감지</li>
+                <li class="tech-item">오류 로깅</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. 프롬프트 엔지니어링 및 응답 최적화 -->
+        <div style="margin-bottom: var(--space-3xl)">
+          <h3
+            style="
+              font-size: var(--font-size-3xl);
+              font-weight: 700;
+              color: var(--color-primary);
+              margin-bottom: var(--space-xl);
+              text-align: center;
+            "
+          >
+            4. 프롬프트 엔지니어링 및 응답 최적화
+          </h3>
+          <div class="tech-grid">
+            <div class="tech-category">
+              <h4 class="tech-category-title">고급 프롬프팅</h4>
+              <ul class="tech-list">
+                <li class="tech-item">System Message (역할 정의)</li>
+                <li class="tech-item">Few-shot Learning</li>
+                <li class="tech-item">Chain-of-Thought (CoT)</li>
+                <li class="tech-item">Self-Consistency</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">응답 검증</h4>
+              <ul class="tech-list">
+                <li class="tech-item">사실성 검증</li>
+                <li class="tech-item">소스 인용 추출</li>
+                <li class="tech-item">응답 길이 제어</li>
+                <li class="tech-item">할루시네이션 탐지</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">Output Format</h4>
+              <ul class="tech-list">
+                <li class="tech-item">JSON 구조화</li>
+                <li class="tech-item">Markdown 포매팅</li>
+                <li class="tech-item">테이블 생성</li>
+                <li class="tech-item">코드 블록</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. 인프라 및 배포 -->
+        <div style="margin-bottom: var(--space-3xl)">
+          <h3
+            style="
+              font-size: var(--font-size-3xl);
+              font-weight: 700;
+              color: var(--color-primary);
+              margin-bottom: var(--space-xl);
+              text-align: center;
+            "
+          >
+            5. 인프라 및 배포
+          </h3>
+          <div class="tech-grid">
+            <div class="tech-category">
+              <h4 class="tech-category-title">컨테이너 &amp; 오케스트레이션</h4>
+              <ul class="tech-list">
+                <li class="tech-item">Docker 컨테이너화</li>
+                <li class="tech-item">Kubernetes 자동 스케일링</li>
+                <li class="tech-item">Helm Charts</li>
+                <li class="tech-item">Self-healing</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">모니터링</h4>
+              <ul class="tech-list">
+                <li class="tech-item">Prometheus + Grafana</li>
+                <li class="tech-item">ELK Stack</li>
+                <li class="tech-item">Jaeger (분산 추적)</li>
+                <li class="tech-item">성능 대시보드</li>
+              </ul>
+            </div>
+            <div class="tech-category">
+              <h4 class="tech-category-title">클라우드 배포</h4>
+              <ul class="tech-list">
+                <li class="tech-item">AWS (EC2, RDS, S3, Lambda)</li>
+                <li class="tech-item">Google Cloud</li>
+                <li class="tech-item">Azure</li>
+                <li class="tech-item">온프레미스</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced Features Section -->
+    <section class="section section-light">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">고급 기술 기능</h2>
+          <p class="section-subtitle">차별화된 RAG 기술력</p>
+        </div>
+        <style>
+          .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 항상 2개씩 */
+            gap: 20px;
+          }
+
+          @media (max-width: 768px) {
+            .card-grid {
+              grid-template-columns: 1fr;
+              /* 모바일에서는 1개씩 */
+            }
+          }
+        </style>
+        <div class="card-grid">
+          <div class="card">
+            <h3 class="card-title">Hybrid Search (하이브리드 검색)</h3>
+            <p class="card-description" style="margin-bottom: var(--space-md)">
+              벡터 + 키워드 검색 결합
+            </p>
+            <ul class="tech-list" style="font-size: var(--font-size-sm)">
+              <li class="tech-item">Cosine Similarity 기반 의미론적 검색</li>
+              <li class="tech-item">BM25 기반 키워드 검색</li>
+              <li class="tech-item">동적 가중치 조절</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Reranking (재순위화)</h3>
+            <p class="card-description" style="margin-bottom: var(--space-md)">
+              Cross-Encoder 기반 정밀 순위화
+            </p>
+            <ul class="tech-list" style="font-size: var(--font-size-sm)">
+              <li class="tech-item">Cross-Encoder 모델 적용</li>
+              <li class="tech-item">Top-K 결과 재순위화</li>
+              <li class="tech-item">관련성 점수 계산</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Multi-hop Reasoning</h3>
+            <p class="card-description" style="margin-bottom: var(--space-md)">다단계 추론</p>
+            <ul class="tech-list" style="font-size: var(--font-size-sm)">
+              <li class="tech-item">질의 분해</li>
+              <li class="tech-item">반복적 검색</li>
+              <li class="tech-item">답변 통합</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Context Window Optimization</h3>
+            <p class="card-description" style="margin-bottom: var(--space-md)">
+              LLM 컨텍스트 최적화
+            </p>
+            <ul class="tech-list" style="font-size: var(--font-size-sm)">
+              <li class="tech-item">토큰 기반 추정</li>
+              <li class="tech-item">중요도 기반 선택</li>
+              <li class="tech-item">Sliding Window</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="section section-gray" id="use-cases">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">AhriRAG 활용 분야</h2>
+          <p class="section-subtitle">다양한 산업별 RAG 서비스 구현</p>
+        </div>
+
+        <div class="use-case-grid">
+          <!-- AhriDesk -->
+          <div class="use-case-card">
+            <div class="use-case-industry">개인 사용자</div>
+            <h3 class="use-case-service">AhriDesk</h3>
+            <p class="use-case-description" style="margin-bottom: var(--space-md)">
+              개인용 RAG 서비스
+            </p>
+
+            <div style="margin-bottom: var(--space-md)">
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                기술 구현
+              </h4>
+              <ul class="tech-list" style="font-size: var(--font-size-sm)">
+                <li class="tech-item">개인 벡터 임베딩 저장소 격리</li>
+                <li class="tech-item">OpenAI Embedding 기반 문서 처리</li>
+                <li class="tech-item">10만+ 대규모 문서 인덱싱</li>
+                <li class="tech-item">실시간 동적 문서 업로드</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                활용 사례
+              </h4>
+              <ul class="use-case-examples">
+                <li class="use-case-example">논문 자료 정리</li>
+                <li class="use-case-example">기술 문서 관리</li>
+                <li class="use-case-example">참고 자료 검색</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- AhriSure -->
+          <div class="use-case-card">
+            <div class="use-case-industry">보험 산업</div>
+            <h3 class="use-case-service">AhriSure</h3>
+            <p class="use-case-description" style="margin-bottom: var(--space-md)">
+              보험 특화 RAG 서비스
+            </p>
+
+            <div style="margin-bottom: var(--space-md)">
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                기술 구현
+              </h4>
+              <ul class="tech-list" style="font-size: var(--font-size-sm)">
+                <li class="tech-item">보험 도메인 특화 프롬프트 템플릿</li>
+                <li class="tech-item">약관 및 규정의 구조화된 인덱싱</li>
+                <li class="tech-item">다중 사용자 동시 접근 지원</li>
+                <li class="tech-item">밀리초 단위의 초고속 응답</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                활용 사례
+              </h4>
+              <ul class="use-case-examples">
+                <li class="use-case-example">고객 질문 즉시 답변</li>
+                <li class="use-case-example">상담원 업무 지원</li>
+                <li class="use-case-example">직원 교육</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- AhriHomePlan -->
+          <div class="use-case-card">
+            <div class="use-case-industry">부동산 청약</div>
+            <h3 class="use-case-service">AhriHomePlan</h3>
+            <p class="use-case-description" style="margin-bottom: var(--space-md)">
+              청약 정보 및 부동산 컨설팅 지원
+            </p>
+            <div style="margin-bottom: var(--space-md)">
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                기술 구현
+              </h4>
+              <ul class="tech-list" style="font-size: var(--font-size-sm)">
+                <li class="tech-item">청약 공고 및 정책의 실시간 인덱싱</li>
+                <li class="tech-item">지역별 부동산 시장 데이터 통합</li>
+                <li class="tech-item">청약 가능성 분석 및 예측 시스템</li>
+                <li class="tech-item">개인화된 청약 추천 알고리즘</li>
+              </ul>
+            </div>
+            <div>
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                활용 사례
+              </h4>
+              <ul class="use-case-examples">
+                <li class="use-case-example">아파트 청약 정보 탐색</li>
+                <li class="use-case-example">지역별 분석 및 비교</li>
+                <li class="use-case-example">개인청약 가능성 예측</li>
+                <li class="use-case-example">부동산 데이터 기반 추천</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- AhriLaw -->
+          <div class="use-case-card">
+            <div class="use-case-industry">법률 분야</div>
+            <h3 class="use-case-service">AhriLaw (준비중)</h3>
+            <p class="use-case-description" style="margin-bottom: var(--space-md)">
+              법률 문서 특화
+            </p>
+
+            <div style="margin-bottom: var(--space-md)">
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                기술 구현
+              </h4>
+              <ul class="tech-list" style="font-size: var(--font-size-sm)">
+                <li class="tech-item">Legal-BERT 도메인 특화 임베딩</li>
+                <li class="tech-item">계약서 조항 구조 인식 기술</li>
+                <li class="tech-item">판례 기반의 유사 사건 검색</li>
+                <li class="tech-item">규정 변경의 실시간 반영 시스템</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                활용 사례
+              </h4>
+              <ul class="use-case-examples">
+                <li class="use-case-example">계약서 분석</li>
+                <li class="use-case-example">판례 검색</li>
+                <li class="use-case-example">컴플라이언스</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- AhriMed -->
+          <div class="use-case-card">
+            <div class="use-case-industry">의료 분야</div>
+            <h3 class="use-case-service">AhriMed (준비중)</h3>
+            <p class="use-case-description" style="margin-bottom: var(--space-md)">
+              의료 정보 특화
+            </p>
+
+            <div style="margin-bottom: var(--space-md)">
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                기술 구현
+              </h4>
+              <ul class="tech-list" style="font-size: var(--font-size-sm)">
+                <li class="tech-item">PubMedBERT, SciBERT 학술 임베딩</li>
+                <li class="tech-item">의료 학술 데이터베이스 통합</li>
+                <li class="tech-item">의약품 상호작용 분석 시스템</li>
+                <li class="tech-item">증거 기반의 임상 응답 생성</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                활용 사례
+              </h4>
+              <ul class="use-case-examples">
+                <li class="use-case-example">논문 검색</li>
+                <li class="use-case-example">약품 정보</li>
+                <li class="use-case-example">진단 지원</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- AhriEdu -->
+          <div class="use-case-card">
+            <div class="use-case-industry">교육 분야</div>
+            <h3 class="use-case-service">AhriEdu (준비중)</h3>
+            <p class="use-case-description" style="margin-bottom: var(--space-md)">
+              교육 콘텐츠 특화
+            </p>
+
+            <div style="margin-bottom: var(--space-md)">
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                기술 구현
+              </h4>
+              <ul class="tech-list" style="font-size: var(--font-size-sm)">
+                <li class="tech-item">학생 수준별 적응형 학습 기술</li>
+                <li class="tech-item">개념 간 관계 그래프 구성</li>
+                <li class="tech-item">응답 난이도 동적 제어</li>
+                <li class="tech-item">최적화된 학습 경로 생성</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4
+                style="
+                  font-size: var(--font-size-sm);
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                  margin-bottom: var(--space-xs);
+                "
+              >
+                활용 사례
+              </h4>
+              <ul class="use-case-examples">
+                <li class="use-case-example">학생 질문 답변</li>
+                <li class="use-case-example">교재 검색</li>
+                <li class="use-case-example">맞춤형 경로</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table Section -->
+    <section class="section section-gray">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">기존 방식 vs AhriRAG</h2>
+        </div>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>기존 방식</th>
+              <th>AhriRAG</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>검색 방식</td>
+              <td>키워드 기반</td>
+              <td>의미론적 벡터 + 하이브리드</td>
+            </tr>
+            <tr>
+              <td>응답 품질</td>
+              <td>문서 링크</td>
+              <td>LLM 기반 컨텍스트 답변</td>
+            </tr>
+            <tr>
+              <td>정확도</td>
+              <td>60-70%</td>
+              <td>95%+</td>
+            </tr>
+            <tr>
+              <td>응답 시간</td>
+              <td>수초 이상</td>
+              <td>&lt;500ms</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TIIS.AI RAG Introduction Section -->
+    <section
+      class="section section-gray"
+      id="tiis-rag-intro"
+      style="
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+        color: var(--color-white);
+      "
+    >
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" style="color: var(--color-white)">TIIS.AI RAG 기술 플랫폼</h2>
+          <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.9)">
+            AhriRAG 서비스들의 기반이 되는 TIIS.AI RAG 기술에 대해 알아보세요.
+          </p>
+        </div>
+        <style>
+          .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 항상 2개씩 */
+            gap: 20px;
+          }
+
+          @media (max-width: 768px) {
+            .card-grid {
+              grid-template-columns: 1fr;
+              /* 모바일에서는 1개씩 */
+            }
+          }
+        </style>
+        <div class="card-grid">
+          <div
+            class="card"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+            "
+          >
+            <h3 class="card-title" style="color: var(--color-white)">
+              벡터 임베딩 기반 의미론적 검색
+            </h3>
+            <p class="card-description" style="color: rgba(255, 255, 255, 0.9)">
+              Semantic Search를 통한 정확한 문서 검색
+            </p>
+          </div>
+          <div
+            class="card"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+            "
+          >
+            <h3 class="card-title" style="color: var(--color-white)">다중 LLM 모델 지원</h3>
+            <p class="card-description" style="color: rgba(255, 255, 255, 0.9)">
+              OpenAI, Gemini, Claude 등 다양한 LLM 통합
+            </p>
+          </div>
+          <div
+            class="card"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+            "
+          >
+            <h3 class="card-title" style="color: var(--color-white)">실시간 벡터 인덱싱 및 검색</h3>
+            <p class="card-description" style="color: rgba(255, 255, 255, 0.9)">
+              고성능 ChromaDB 기반 빠른 검색
+            </p>
+          </div>
+          <div
+            class="card"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+            "
+          >
+            <h3 class="card-title" style="color: var(--color-white)">프롬프트 엔지니어링</h3>
+            <p class="card-description" style="color: rgba(255, 255, 255, 0.9)">
+              최적화된 응답 생성 및 품질 관리
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-xl)">
+          <a
+            href="/TIIS.RAG_AI/"
+            class="btn-service"
+            style="background-color: var(--color-white); color: var(--color-primary)"
+            >기술 자세히 보기 →</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-main">
+          <!-- AhriRAG Platform Section -->
+          <div class="footer-section">
+            <h3 class="footer-section-title">AhriRAG 플랫폼</h3>
+            <ul class="footer-links">
+              <li><a href="#about" class="footer-link">플랫폼 소개</a></li>
+              <li><a href="#technology" class="footer-link">기술 구현</a></li>
+              <li><a href="#use-cases" class="footer-link">활용 분야</a></li>
+            </ul>
+          </div>
+
+          <!-- Services Section -->
+          <div class="footer-section">
+            <h3 class="footer-section-title">서비스</h3>
+            <ul class="footer-links">
+              <li><a href="/AhriDesk/" class="footer-link" target="_blank">AhriDesk</a></li>
+              <li><a href="/AhriSure/" class="footer-link" target="_blank">AhriSure</a></li>
+            </ul>
+          </div>
+
+          <!-- Technology Section -->
+          <div class="footer-section">
+            <h3 class="footer-section-title">기술</h3>
+            <ul class="footer-links">
+              <li><a href="/TIIS.RAG_AI/" class="footer-link" target="_blank">TIIS.AI RAG</a></li>
+              <li>
+                <a href="/TIIS.RAG_AI/" class="footer-link" target="_blank">기술 자세히 보기</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Company Section -->
+          <div class="footer-section">
+            <h3 class="footer-section-title">회사</h3>
+            <div class="footer-company-name">BNSoft</div>
+            <div class="footer-company-name-ko">비에네스소프트</div>
+            <p class="footer-company-desc">AI 기반 비전 솔루션 및 RAG 기술 전문 회사</p>
+            <a href="https://www.bns.co.kr/" class="footer-company-link" target="_blank"
+              >www.bns.co.kr</a
+            >
+          </div>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="footer-bottom">
+          <p class="footer-powered">
+            Powered by <a href="/TIIS.RAG_AI/" target="_blank">TIIS.AI RAG</a> | Developed by
+            <a href="https://www.bns.co.kr" target="_blank">BNSoft</a>
+          </p>
+          <p class="footer-copyright">&copy; 2025 AhriRAG. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileToggle = document.getElementById('mobileToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      mobileToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+      });
+
+      // Dropdown toggle
+      const dropdown = document.getElementById('servicesDropdown');
+      const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+
+      // Toggle dropdown on click
+      dropdownToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropdown.classList.toggle('active');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('active');
+        }
+      });
+
+      // Close mobile menu when clicking on a link
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            navMenu.classList.remove('active');
+          }
+        });
+      });
+
+      // Smooth scroll with offset for fixed header
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', function (e) {
+          const href = this.getAttribute('href');
+          if (href !== '#' && href !== '#services') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+              const headerHeight = 70;
+              const targetPosition = target.offsetTop - headerHeight;
+              window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth',
+              });
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
