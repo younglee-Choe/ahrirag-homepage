@@ -43,10 +43,10 @@ export function Header() {
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 px-5">
-      <div className="flex h-15 md:h-30 items-center justify-between px-0 md:container md:mx-auto">
+      <div className="flex h-15 md:h-25 items-center justify-between px-0 md:container md:mx-auto">
         <div className="flex items-center">
           <button onClick={() => scrollToSection('hero')} className="cursor-pointer">
-            <div className="block md:hidden flex flex-row items-center justify-center gap-1 ml-0 md:ml-0">
+            {/* <div className="block md:hidden flex flex-row items-center justify-center gap-1 ml-0 md:ml-0">
               <img
                 src="/AhriSure/images/ahrisure-icon2.png"
                 className="w-13 h-13 object-fill"
@@ -57,11 +57,12 @@ export function Header() {
                 className="w-20 h-15 object-fill"
                 alt="AhriSure Text"
               />
-            </div>
-            <div className="hidden md:block">
+            </div> */}
+            {/* <div className="hidden md:block"> */}
+            <div>
               <img
                 src="/AhriSure/images/ahrisure-logo2.png"
-                className="w-25 h-25 object-fill"
+                className="w-17 h-16 md:w-25 md:h-25 object-fill"
                 alt="AhriSure Icon"
               />
             </div>

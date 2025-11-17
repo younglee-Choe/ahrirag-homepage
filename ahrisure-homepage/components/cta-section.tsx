@@ -2,23 +2,21 @@ import { Button } from '@/components/ui/button';
 
 export function CtaSection() {
   return (
-    <section className="py-20 text-white relative overflow-hidden pt-35 pb-20 bg-white">
-       <img
+    <section className="h-100 md:h-full py-20 text-white relative overflow-hidden md:pt-35 md:pb-20 bg-white">
+      <img
         src="/AhriSure/images/10.png"
         alt=""
         draggable={false}
         aria-hidden="true"
-        className="absolute inset-0 z-0 h-full w-full object-cover blur-[1px] brightness-90 scale-110"
+        className="absolute inset-0 z-0 h-full w-full object-cover blur-[2px] md:blur-[1.5px] brightness-90 scale-110"
       />
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">지금 바로 시작하세요</h2>
-          <p className="text-lg mb-4 opacity-90 leading-relaxed">
-            {/* 위 */}
-            웃음과 신뢰가 넘치는 상담, 오늘도 AI 보험 매니저가 함께합니다.
+          <h2 className="text-2xl md:text-4xl font-bold mb-10 opacity-90">지금 바로 시작하세요</h2>
+          <p className="text-base md:text-lg mb-4 opacity-80 leading-relaxed inline-block px-4 py-1 rounded-md bg-[#662d01]/75 md:bg-[#0f172b]/75">
+            웃음과 신뢰가 넘치는 상담,<br className="block md:hidden" />오늘도 AI 보험 매니저가 함께합니다.
           </p>
-          <p className="text-base mb-8 opacity-90 leading-relaxed">\
-            {/* 아래로 글자 나누기 */}
+          <p className="text-sm md:text-base mb-8 opacity-80 leading-relaxed inline-block px-4 py-1 rounded-md bg-[#662d01]/75 md:bg-[#0f172b]/75">
             더 많은 보험 설계사님이 AI 보험 매니저를 경험하며, 업무가 더욱 쉽고 즐거워지는 새상을
             만들어갑니다.
           </p>

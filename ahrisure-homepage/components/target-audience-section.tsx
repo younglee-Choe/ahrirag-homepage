@@ -1,3 +1,8 @@
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 export function TargetAudienceSection() {
   const managerIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -94,11 +99,11 @@ export function TargetAudienceSection() {
       <div className="container mx-auto px-6">
         <div className="mx-auto mb-8 md:mb-16 max-w-3xl text-center">
           <h2 className="mb-4 text-2xl md:text-4xl font-bold tracking-tight">
-            누구에게 꼭 필요한 서비스인가요?
+            누구에게 꼭 필요한<br className="block md:hidden" />서비스인가요?
           </h2>
           <p className="text-muted-foreground">다양한 분들께 도움을 드립니다</p>
         </div>
-        <div className="grid gap-8 md:grid-cols-2 max-w-6xl mx-auto">
+        <div className="hidden md:grid gap-8 md:grid-cols-2 max-w-6xl mx-auto">
           {audiences.map((audience, index) => (
             <div
               key={index}
@@ -111,6 +116,29 @@ export function TargetAudienceSection() {
               <p className="text-gray-600">{audience.description}</p>
             </div>
           ))}
+        </div>
+
+        <div className="md:hidden">
+          <Swiper
+            modules={[Pagination, Autoplay]}
+            spaceBetween={16}
+            slidesPerView={1}
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 6000, disableOnInteraction: false }}
+            loop={true}
+          >
+            {audiences.map((audience, index) => (
+              <SwiperSlide key={index}>
+                <div className="rounded-2xl bg-white p-6 mx-2 mb-15 shadow-lg transition hover:shadow-xl duration-200 border-b-4 border-[#3d9b8f] aspect-[4/3]">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#d4f4f0]">
+                    <audience.icon className="h-7 w-7 text-teal-600" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold text-gray-900">{audience.title}</h3>
+                  <p className="text-gray-600">{audience.description}</p>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
     </section>

@@ -8,7 +8,7 @@ export function DocumentPrepSection() {
               <img
                 src="images/6.png"
                 alt="문서 준비 인터페이스"
-                className="w-100 h-90 rounded-3xl shadow-xl object-cover"
+                className="w-80 h-80 md:w-100 md:h-90 rounded-3xl shadow-xl object-cover"
               />
             </div>
             <div className="order-1 md:order-2">
