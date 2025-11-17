@@ -36,7 +36,7 @@ export function AiConsultationSection() {
             </div>
             <div>
               <img
-                src="/images/5.png"
+                src="/AhriSure/images/5.png"
                 alt="AI 상담 인터페이스"
                 className="w-100 h-90 rounded-3xl shadow-xl ml-auto object-cover"
               />

@@ -48,19 +48,19 @@ export function Header() {
           <button onClick={() => scrollToSection('hero')} className="cursor-pointer">
             <div className="block md:hidden flex flex-row items-center justify-center gap-1 ml-0 md:ml-0">
               <img
-                src="/images/ahrisure-icon2.png"
+                src="/AhriSure/images/ahrisure-icon2.png"
                 className="w-13 h-13 object-fill"
                 alt="AhriSure Icon"
               />
               <img
-                src="/images/ahrisure-text2.png"
+                src="/AhriSure/images/ahrisure-text2.png"
                 className="w-20 h-15 object-fill"
                 alt="AhriSure Text"
               />
             </div>
             <div className="hidden md:block">
               <img
-                src="/images/ahrisure-logo2.png"
+                src="/AhriSure/images/ahrisure-logo2.png"
                 className="w-25 h-25 object-fill"
                 alt="AhriSure Icon"
               />

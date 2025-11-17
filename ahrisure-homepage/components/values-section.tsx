@@ -30,7 +30,7 @@ export function ValuesSection() {
             <p className="text-sm text-gray-500 mb-4">반복 업무 자동화</p>
             <div className=" max-w-6xl mx-auto h-30 overflow-hidden relative mb-6">
               <img
-                src="/images/2.png"
+                src="/AhriSure/images/2.png"
                 alt="AI 기술 시각화"
                 className="w-full h-full object-cover rounded-md shadow-lg"
               />
@@ -62,7 +62,7 @@ export function ValuesSection() {
             <p className="text-sm text-gray-500 mb-4">반복 업무 자동화</p>
             <div className=" max-w-6xl mx-auto h-auto overflow-hidden relative mb-6">
               <img
-                src="/images/2.png"
+                src="/AhriSure/images/2.png"
                 alt="AI 기술 시각화"
                 className="w-full h-full object-cover rounded-md shadow-lg"
               />
@@ -96,7 +96,7 @@ export function ValuesSection() {
             <p className="text-sm text-gray-500 mb-4">고객 맞춤형 제안</p>
             <div className=" max-w-6xl mx-auto h-30 overflow-hidden relative mb-6">
               <img
-                src="/images/3.png"
+                src="/AhriSure/images/3.png"
                 alt="AI 기술 시각화"
                 className="w-full h-full object-cover rounded-md shadow-lg"
               />
@@ -127,7 +127,7 @@ export function ValuesSection() {
             <p className="text-sm text-gray-500 mb-4">신뢰와 만족 향상</p>
             <div className=" max-w-6xl mx-auto h-30 overflow-hidden relative mb-6">
               <img
-                src="/images/4.png"
+                src="/AhriSure/images/4.png"
                 alt="AI 기술 시각화"
                 className="w-full h-full object-cover rounded-md shadow-lg"
               />

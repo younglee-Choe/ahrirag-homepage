@@ -4,7 +4,7 @@ export function HeroSection() {
   return (
     <section id="hero" className="relative overflow-hidden md:mt-10 pt-20 md:pt-35 pb-20 bg-white">
       <img
-        src="/images/hero-bg.png"
+        src="/AhriSure/images/hero-bg.png"
         alt=""
         draggable={false}
         aria-hidden="true"

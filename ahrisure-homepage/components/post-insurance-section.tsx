@@ -12,7 +12,7 @@ export function PostInsuranceSection() {
         <div className="grid md:grid-cols-3">
           <div className="mt-10 mr-10">
             <img
-              src="/images/9.png"
+              src="/AhriSure/images/9.png"
               alt="AI 기술 시각화"
               className="hidden md:block w-full h-full rounded-xl shadow-lg object-cover blur-[1px]"
             />

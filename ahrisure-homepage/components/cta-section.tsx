@@ -4,7 +4,7 @@ export function CtaSection() {
   return (
     <section className="py-20 text-white relative overflow-hidden pt-35 pb-20 bg-white">
        <img
-        src="/images/10.png"
+        src="/AhriSure/images/10.png"
         alt=""
         draggable={false}
         aria-hidden="true"

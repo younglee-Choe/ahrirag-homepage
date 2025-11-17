@@ -37,7 +37,7 @@ export function TechnologySection() {
             </div>
             <div className="md:mt-10 md:mr-10 md:p-3 order-1 md:order-2">
               <img
-                src="/images/rag.png"
+                src="/AhriSure/images/rag.png"
                 alt="AI 기술 시각화"
                 className="w-full rounded-4xl mb-7 shadow-lg object-cover"
               />
