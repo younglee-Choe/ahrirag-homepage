@@ -1,9 +1,0 @@
-1:"$Sreact.fragment"
-2:I[97367,["/AhriSure/_next/static/chunks/5bab93f39577e409.js","/AhriSure/_next/static/chunks/42879de7b8087bc9.js"],"ViewportBoundary"]
-4:I[97367,["/AhriSure/_next/static/chunks/5bab93f39577e409.js","/AhriSure/_next/static/chunks/42879de7b8087bc9.js"],"MetadataBoundary"]
-5:"$Sreact.suspense"
-:HL["/AhriSure/_next/static/chunks/8a80e7184ad3a13f.css","style"]
-:HL["/AhriSure/_next/static/chunks/f5fc55a742b88942.css","style"]
-0:{"buildId":"sPY48oSyBUZRQGBTJ_z4E","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"/_not-found","paramType":null,"paramKey":"/_not-found","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"head":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L2",null,{"children":"$@3"}],["$","div",null,{"hidden":true,"children":["$","$L4",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":"$@6"}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isHeadPartial":false,"staleTime":300}
-3:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
-6:[["$","title","0",{"children":"Ahri AI 보험 매니저 - AI가 함께하는 스마트한 보험 영업"}],["$","meta","1",{"name":"description","content":"AI 보험 매니저로 더 스마트하고 효율적인 보험 영업을 시작하세요. 설계사님과 고객 모두를 위한 최고의 상담 경험을 제공합니다."}],["$","meta","2",{"name":"generator","content":"v0.app"}]]
